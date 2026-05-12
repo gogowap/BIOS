@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riwayat Aktivitas - Perpustakaan</title>
+<script src="/nav.js"></script>
+<script>document.write(sharedCSS);</script>
+<style>
+.action-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.71rem;font-weight:500;white-space:nowrap;}
+.act-TAMBAH_BUKU,.act-TAMBAH_ANGGOTA{background:rgba(90,158,111,.15);color:#7dcb96;}
+.act-EDIT_BUKU,.act-EDIT_ANGGOTA{background:rgba(74,142,201,.15);color:#74b3e8;}
+.act-HAPUS_BUKU,.act-HAPUS_ANGGOTA{background:rgba(224,90,74,.15);color:#e87c6e;}
+.act-PINJAM_BUKU{background:rgba(201,168,76,.15);color:var(--gold);}
+.act-KEMBALI_BUKU{background:rgba(150,120,200,.15);color:#c9a8f0;}
+.time-ago{font-size:.75rem;color:var(--text-muted);margin-top:2px;}
+.filter-sel{padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.84rem;outline:none;}
+.filter-sel option{background:var(--surface2);}
+</style>
+</head>
+<body>
+<nav id="mainNav"></nav>
+<main>
+  <div class="page-header">
+    <div class="page-title">Riwayat <span>Aktivitas</span></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select class="filter-sel" id="filterAction" onchange="filterLogs()">
+        <option value="">Semua Aksi</option>
+        <option value="TAMBAH_BUKU">Tambah Buku</option>
+        <option value="EDIT_BUKU">Edit Buku</option>
+        <option value="HAPUS_BUKU">Hapus Buku</option>
+        <option value="TAMBAH_ANGGOTA">Tambah Anggota</option>
+        <option value="EDIT_ANGGOTA">Edit Anggota</option>
+        <option value="HAPUS_ANGGOTA">Hapus Anggota</option>
+        <option value="PINJAM_BUKU">Pinjam Buku</option>
+        <option value="KEMBALI_BUKU">Kembali Buku</option>
+      </select>
+      <button class="btn btn-ghost" onclick="loadLogs()">↻ Refresh</button>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Waktu</th><th>Pelaku</th><th>Aksi</th><th>Target</th><th>Detail</th></tr></thead>
+      <tbody id="logTable"><tr><td colspan="5" class="empty-state"><div class="icon">📋</div>Memuat...</td></tr></tbody>
+    </table>
+  </div>
+</main>
+<script>
+requireAuth();
+if(!isAdmin()) window.location.href='/user-home.html';
+renderNav('activity');
+
+let allLogs=[];
+
+const ACTION_LABEL={
+  TAMBAH_BUKU:'Tambah Buku',EDIT_BUKU:'Edit Buku',HAPUS_BUKU:'Hapus Buku',
+  TAMBAH_ANGGOTA:'Tambah Anggota',EDIT_ANGGOTA:'Edit Anggota',HAPUS_ANGGOTA:'Hapus Anggota',
+  PINJAM_BUKU:'Pinjam Buku',KEMBALI_BUKU:'Kembali Buku',
+};
+
+function timeAgo(d){
+  const s=Math.floor((Date.now()-new Date(d).getTime())/1000);
+  if(s<60) return s+'detik lalu';
+  if(s<3600) return Math.floor(s/60)+' menit lalu';
+  if(s<86400) return Math.floor(s/3600)+' jam lalu';
+  return Math.floor(s/86400)+' hari lalu';
+}
+
+function fmt(d){
+  if(!d) return '-';
+  return new Date(d).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+async function loadLogs(){
+  try{
+    const{data}=await apiCall('GET','/activity');
+    allLogs=data;
+    renderLogs(data);
+  }catch(e){toast(e.message,'error');}
+}
+
+function renderLogs(logs){
+  const tb=document.getElementById('logTable');
+  if(!logs.length){
+    tb.innerHTML='<tr><td colspan="5" class="empty-state"><div class="icon">📋</div>Belum ada aktivitas tercatat</td></tr>';
+    return;
+  }
+  tb.innerHTML=logs.map(l=>`<tr>
+    <td>
+      <div style="font-size:.83rem">${fmt(l.created_at)}</div>
+      <div class="time-ago">${timeAgo(l.created_at)}</div>
+    </td>
+    <td style="color:var(--gold);font-size:.84rem">${l.actor}</td>
+    <td><span class="action-badge act-${l.action}">${ACTION_LABEL[l.action]||l.action}</span></td>
+    <td><strong style="font-size:.84rem">${l.target}</strong></td>
+    <td style="color:var(--text-muted);font-size:.79rem">${l.detail||'-'}</td>
+  </tr>`).join('');
+}
+
+function filterLogs(){
+  const f=document.getElementById('filterAction').value;
+  renderLogs(f?allLogs.filter(l=>l.action===f):allLogs);
+}
+
+loadLogs();
+setInterval(loadLogs,30000);
+</script>
+</body>
+</html>
