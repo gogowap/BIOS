@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Perpustakaan</title>
+<script src="/nav.js"></script>
+<script>document.write(sharedCSS);</script>
+<style>
+.notif-wrap{margin-bottom:20px;display:flex;flex-direction:column;gap:8px;}
+.notif{padding:12px 16px;border-radius:9px;font-size:.84rem;display:flex;align-items:center;gap:10px;}
+.notif-overdue{background:rgba(224,90,74,.1);border:1px solid rgba(224,90,74,.25);color:#e87c6e;}
+.notif-soon{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--gold);}
+.notif-icon{font-size:1.1rem;flex-shrink:0;}
+.notif-text strong{display:block;margin-bottom:2px;}
+.notif-list{margin-top:6px;display:flex;flex-direction:column;gap:3px;}
+.notif-item{font-size:.79rem;opacity:.9;}
+</style>
+</head>
+<body>
+<nav id="mainNav"></nav>
+<main>
+  <div class="page-header">
+    <div>
+      <div class="page-title">Selamat Datang, <span>Admin</span></div>
+      <div style="color:var(--text-muted);font-size:.83rem;margin-top:4px" id="tanggalHari"></div>
+    </div>
+  </div>
+
+  <!-- NOTIFIKASI JATUH TEMPO -->
+  <div class="notif-wrap" id="notifWrap"></div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Total Buku</div><div class="stat-value" id="statBooks">—</div><div class="stat-sub">judul terdaftar</div></div>
+    <div class="stat-card"><div class="stat-label">Anggota Aktif</div><div class="stat-value" id="statMembers">—</div><div class="stat-sub">terdaftar</div></div>
+    <div class="stat-card"><div class="stat-label">Sedang Dipinjam</div><div class="stat-value" id="statLoans">—</div><div class="stat-sub">buku aktif</div></div>
+    <div class="stat-card"><div class="stat-label">Total Denda</div><div class="stat-value" id="statFine" style="font-size:1.2rem">—</div><div class="stat-sub">terkumpul</div></div>
+  </div>
+
+  <div class="section-label">Peminjaman Terbaru</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Buku</th><th>Anggota</th><th>Jatuh Tempo</th><th>Status</th></tr></thead>
+      <tbody id="dashLoans"><tr><td colspan="4" class="empty-state">Memuat...</td></tr></tbody>
+    </table>
+  </div>
+</main>
+<script>
+requireAuth();
+renderNav('dashboard');
+
+const LABEL={borrowed:'Dipinjam',returned:'Dikembalikan',overdue:'Terlambat'};
+function fmt(d){return d?new Date(d).toLocaleDateString('id-ID'):'-';}
+function fmtRp(n){return 'Rp '+Number(n||0).toLocaleString('id-ID');}
+function daysDiff(a,b){return Math.ceil((new Date(b)-new Date(a))/86400000);}
+
+// Tampilkan tanggal hari ini
+const now=new Date();
+document.getElementById('tanggalHari').textContent=now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+function buildNotifications(loans){
+  const today=new Date().toISOString().split('T')[0];
+  const overdue=[], soonH1=[], soonH2=[], soonH3=[];
+
+  loans.filter(l=>l.status==='borrowed'||l.status==='overdue').forEach(l=>{
+    const due=(l.due_date||'').split('T')[0];
+    const diff=daysDiff(today,due); // negatif = sudah lewat
+    if(diff<0||l.status==='overdue') overdue.push(l);
+    else if(diff===0) soonH1.push(l);
+    else if(diff===1) soonH2.push(l);
+    else if(diff===2||diff===3) soonH3.push(l);
+  });
+
+  const wrap=document.getElementById('notifWrap');
+  wrap.innerHTML='';
+
+  if(overdue.length){
+    wrap.innerHTML+=`<div class="notif notif-overdue">
+      <div class="notif-icon">🚨</div>
+      <div class="notif-text">
+        <strong>${overdue.length} peminjaman sudah melewati jatuh tempo!</strong>
+        <div class="notif-list">${overdue.slice(0,3).map(l=>`<div class="notif-item">• ${l.book_title||'Buku #'+l.book_id} — ${l.member_name||'Anggota #'+l.member_id}</div>`).join('')}${overdue.length>3?`<div class="notif-item">...dan ${overdue.length-3} lainnya</div>`:''}</div>
+      </div>
+    </div>`;
+  }
+
+  if(soonH1.length){
+    wrap.innerHTML+=`<div class="notif notif-soon">
+      <div class="notif-icon">⚠️</div>
+      <div class="notif-text">
+        <strong>${soonH1.length} peminjaman jatuh tempo HARI INI!</strong>
+        <div class="notif-list">${soonH1.map(l=>`<div class="notif-item">• ${l.book_title||'Buku #'+l.book_id} — ${l.member_name||'Anggota #'+l.member_id}</div>`).join('')}</div>
+      </div>
+    </div>`;
+  }
+
+  if(soonH2.length){
+    wrap.innerHTML+=`<div class="notif notif-soon">
+      <div class="notif-icon">📅</div>
+      <div class="notif-text">
+        <strong>${soonH2.length} peminjaman jatuh tempo besok</strong>
+        <div class="notif-list">${soonH2.map(l=>`<div class="notif-item">• ${l.book_title||'Buku #'+l.book_id} — ${l.member_name||'Anggota #'+l.member_id}</div>`).join('')}</div>
+      </div>
+    </div>`;
+  }
+
+  if(soonH3.length){
+    wrap.innerHTML+=`<div class="notif notif-soon">
+      <div class="notif-icon">🔔</div>
+      <div class="notif-text">
+        <strong>${soonH3.length} peminjaman jatuh tempo dalam 2-3 hari</strong>
+        <div class="notif-list">${soonH3.map(l=>`<div class="notif-item">• ${l.book_title||'Buku #'+l.book_id} — ${l.member_name||'Anggota #'+l.member_id}</div>`).join('')}</div>
+      </div>
+    </div>`;
+  }
+}
+
+async function init(){
+  try{
+    const[books,members,loans]=await Promise.all([
+      apiCall('GET','/books'),apiCall('GET','/members'),apiCall('GET','/loans')
+    ]);
+    document.getElementById('statBooks').textContent=books.data.length;
+    document.getElementById('statMembers').textContent=members.data.filter(m=>m.status==='active').length;
+    const active=loans.data.filter(l=>l.status==='borrowed'||l.status==='overdue').length;
+    document.getElementById('statLoans').textContent=active;
+    const totalFine=loans.data.reduce((s,l)=>s+Number(l.fine||0),0);
+    document.getElementById('statFine').textContent=fmtRp(totalFine);
+
+    // Notifikasi jatuh tempo
+    buildNotifications(loans.data);
+
+    // Tabel peminjaman terbaru
+    const tb=document.getElementById('dashLoans');
+    const rows=loans.data.slice(0,8);
+    if(!rows.length){tb.innerHTML='<tr><td colspan="4" class="empty-state">Belum ada peminjaman</td></tr>';return;}
+    tb.innerHTML=rows.map(l=>`<tr>
+      <td><strong>${l.book_title||'Buku #'+l.book_id}</strong></td>
+      <td>${l.member_name||'Anggota #'+l.member_id}</td>
+      <td style="color:var(--text-muted)">${fmt(l.due_date)}</td>
+      <td><span class="badge badge-${l.status}">${LABEL[l.status]||l.status}</span></td>
+    </tr>`).join('');
+  }catch(e){toast(e.message,'error');}
+}
+init();
+</script>
+</body>
+</html>
