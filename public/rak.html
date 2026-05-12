@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rak Buku - Perpustakaan</title>
+<script src="/nav.js"></script>
+<script>document.write(sharedCSS);</script>
+<style>
+.rak-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:13px;margin-bottom:22px;}
+.rak-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all .2s;position:relative;}
+.rak-card:hover{border-color:var(--gold);}
+.rak-card.active-rak{border-color:var(--gold);background:var(--gold-dim);}
+.rak-name{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:4px;}
+.rak-count{font-size:.76rem;color:var(--text-muted);}
+.rak-desc{font-size:.74rem;color:var(--text-muted);margin-top:5px;}
+.rak-actions{position:absolute;top:10px;right:10px;display:flex;gap:4px;opacity:0;transition:opacity .2s;}
+.rak-card:hover .rak-actions{opacity:1;}
+.divider{height:1px;background:var(--border);margin:18px 0;}
+</style>
+</head>
+<body>
+<nav id="mainNav"></nav>
+<main>
+  <div class="page-header">
+    <div class="page-title">Rak <span>Buku</span></div>
+    <div id="adminActions"></div>
+  </div>
+  <div class="rak-grid" id="rakGrid"><div style="color:var(--text-muted)">Memuat...</div></div>
+  <div id="rakBooksSection" style="display:none">
+    <div class="divider"></div>
+    <div class="section-label">Buku di rak: <span id="activeRakName" style="color:var(--gold)"></span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Judul</th><th>Pengarang</th><th>ISBN</th><th>Stok</th></tr></thead>
+        <tbody id="rakBooksTable"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL (admin only) -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Tambah Rak</div>
+    <input type="hidden" id="editId">
+    <div class="form-group"><label>Nama Rak</label><input id="fName" placeholder="Contoh: Rak Fiksi, Rak Sains"></div>
+    <div class="form-group"><label>Deskripsi</label><textarea id="fDesc" placeholder="Deskripsi singkat rak..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Batal</button>
+      <button class="btn btn-primary" onclick="submitForm()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+requireAuth();
+renderNav('rak');
+let allRak=[], allBooks=[];
+
+function getRakList(){try{return JSON.parse(localStorage.getItem('rak_list')||'[]');}catch{return[];}}
+function saveRakList(l){localStorage.setItem('rak_list',JSON.stringify(l));}
+
+async function init(){
+  // Tampilkan tombol tambah rak hanya untuk admin
+  if(isAdmin()){
+    document.getElementById('adminActions').innerHTML='<button class="btn btn-primary" onclick="openModal(null)">+ Tambah Rak</button>';
+  }
+  try{const{data}=await apiCall('GET','/books');allBooks=data;}catch(e){}
+  allRak=getRakList();
+  renderRak();
+}
+
+function renderRak(){
+  const g=document.getElementById('rakGrid');
+  if(!allRak.length){g.innerHTML='<div style="color:var(--text-muted);grid-column:1/-1;padding:16px">'+( isAdmin()?'Belum ada rak. Klik "+ Tambah Rak".':'Belum ada rak.')+'</div>';return;}
+  g.innerHTML=allRak.map(r=>{
+    const cnt=allBooks.filter(b=>b.category===r.name).length;
+    return `<div class="rak-card" onclick="showRakBooks('${r.id}')">
+      ${isAdmin()?`<div class="rak-actions">
+        <button class="btn btn-edit btn-sm" onclick="event.stopPropagation();openModal('${r.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteRak('${r.id}')">Hapus</button>
+      </div>`:''}
+      <div class="rak-name">${r.name}</div>
+      <div class="rak-count">${cnt} buku tersedia</div>
+      ${r.desc?`<div class="rak-desc">${r.desc}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function showRakBooks(id){
+  const r=allRak.find(x=>x.id===id); if(!r) return;
+  document.getElementById('activeRakName').textContent=r.name;
+  document.getElementById('rakBooksSection').style.display='block';
+  const books=allBooks.filter(b=>b.category===r.name);
+  const tb=document.getElementById('rakBooksTable');
+  if(!books.length){tb.innerHTML='<tr><td colspan="4" class="empty-state">Tidak ada buku di rak ini</td></tr>';return;}
+  tb.innerHTML=books.map(b=>`<tr>
+    <td><strong>${b.title}</strong></td><td>${b.author}</td>
+    <td style="color:var(--text-muted);font-size:.78rem">${b.isbn}</td>
+    <td style="color:${b.stock>0?'var(--green)':'var(--red)'}">${b.stock}</td>
+  </tr>`).join('');
+  document.querySelectorAll('.rak-card').forEach((c,i)=>c.classList.toggle('active-rak',allRak[i]?.id===id));
+}
+
+function openModal(id){
+  if(!isAdmin()) return;
+  document.getElementById('editId').value=id||'';
+  if(id){
+    const r=allRak.find(x=>x.id===id);
+    document.getElementById('modalTitle').textContent='Edit Rak';
+    document.getElementById('fName').value=r.name;
+    document.getElementById('fDesc').value=r.desc||'';
+  } else {
+    document.getElementById('modalTitle').textContent='Tambah Rak Baru';
+    ['fName','fDesc'].forEach(i=>document.getElementById(i).value='');
+  }
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+function submitForm(){
+  const name=document.getElementById('fName').value.trim();
+  if(!name){toast('Nama rak wajib diisi','error');return;}
+  const desc=document.getElementById('fDesc').value.trim();
+  const editId=document.getElementById('editId').value;
+  let list=getRakList();
+  if(editId){list=list.map(r=>r.id===editId?{...r,name,desc}:r);toast('Rak diupdate');}
+  else{list.push({id:'r'+Date.now(),name,desc});toast('Rak ditambahkan');}
+  saveRakList(list);allRak=list;
+  renderRak();closeModal();
+}
+
+function deleteRak(id){
+  if(!confirm('Hapus rak ini?')) return;
+  const list=getRakList().filter(r=>r.id!==id);
+  saveRakList(list);allRak=list;
+  renderRak();document.getElementById('rakBooksSection').style.display='none';
+  toast('Rak dihapus');
+}
+
+init();
+</script>
+</body>
+</html>
