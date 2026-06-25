@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peminjaman Saya - Perpustakaan</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/nav/nav.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <nav id="mainNav"></nav>
+    <main>
+        <div class="page-header">
+            <div class="page-title">Peminjaman <span>Saya</span></div>
+        </div>
+        <div class="info-box" id="infoBox">
+            📋 Menampilkan riwayat peminjaman atas nama: <strong id="memberNameInfo">—</strong>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Buku</th>
+                        <th>Tgl Pinjam</th>
+                        <th>Jatuh Tempo</th>
+                        <th>Tgl Kembali</th>
+                        <th>Status</th>
+                        <th>Denda</th>
+                    </tr>
+                </thead>
+                <tbody id="loansTable">
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div class="icon">🔄</div>Memuat...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <<script src="/nav/nav.js">
+        </script>
+        <script src="pinjaman_pengguna.js"></script>
+        <script>
+            renderNav('peminjaman_pengguna');
+        </script>
+</body>
+
+</html>

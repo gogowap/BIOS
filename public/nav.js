@@ -2,6 +2,7 @@ const API = 'http://localhost:3000/api';
 
 function requireAuth() {
   const token = localStorage.getItem('auth_token');
+  if (!token) { window.location.href = '/login.html'; return null; }
   if (!token) { 
     window.location.href = '/login.html'; return null; 
   }
@@ -9,11 +10,15 @@ function requireAuth() {
 }
 
 function getUser() {
+<<<<<<< HEAD
+  try { return JSON.parse(localStorage.getItem('auth_user') || '{}'); } catch { return {}; }
+=======
   try {
     return JSON.parse(localStorage.getItem('auth_user') || '{}');
   } catch {
     return {};
   }
+>>>>>>> e27dc7798dcfd937ea2ec055711feec47ec5cfc6
 }
 
 function isAdmin() { return getUser().role === 'admin'; }
@@ -48,7 +53,11 @@ function toast(msg, type = 'success') {
     document.body.appendChild(c);
   }
   const el = document.createElement('div');
+<<<<<<< HEAD
+  el.style.cssText = `padding:10px 16px;border-radius:8px;font-size:.83rem;font-weight:500;max-width:320px;${type==='success'?'background:#1a3326;border:1px solid #2d5c42;color:#7dcb96;':'background:#3a1a17;border:1px solid #6b2e27;color:#e87c6e;'}`;
+=======
   el.style.cssText = `padding:10px 16px;border-radius:8px;font-size:.83rem;font-weight:500;max-width:320px;${type === 'success' ? 'background:#1a3326;border:1px solid #2d5c42;color:#7dcb96;' : 'background:#3a1a17;border:1px solid #6b2e27;color:#e87c6e;'}`;
+>>>>>>> e27dc7798dcfd937ea2ec055711feec47ec5cfc6
   el.textContent = (type === 'success' ? '✓  ' : '✕  ') + msg;
   c.appendChild(el);
   setTimeout(() => el.remove(), 3500);
@@ -81,10 +90,17 @@ function renderNav(activePage) {
   nav.innerHTML = `
     <div class="nav-brand">📚 Perpustakaan</div>
     <div class="nav-tabs">
+<<<<<<< HEAD
+      ${pages.map(p => `<a class="nav-tab${p.id===activePage?' active':''}" href="${p.href}">${p.label}</a>`).join('')}
+    </div>
+    <div class="nav-right">
+      <span class="nav-user">${admin?'🛡️':'👤'} ${user.name||'User'}</span>
+=======
       ${pages.map(p => `<a class="nav-tab${p.id === activePage ? ' active' : ''}" href="${p.href}">${p.label}</a>`).join('')}
     </div>
     <div class="nav-right">
       <span class="nav-user">${admin ? '🛡️' : '👤'} ${user.name || 'User'}</span>
+>>>>>>> e27dc7798dcfd937ea2ec055711feec47ec5cfc6
       <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
   `;

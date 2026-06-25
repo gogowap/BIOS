@@ -38,6 +38,8 @@ const startServer = async () => {
   await testConnection();
   await initializeDatabase();
   app.listen(appConfig.port, () => {
+    console.log(` Server: http://localhost:${appConfig.port}`);
+    console.log(` Admin: admin / admin123`);
     console.log(`🚀 Server: http://localhost:${appConfig.port}`);
     console.log(`🔑 Admin: admin / admin123`);
   });

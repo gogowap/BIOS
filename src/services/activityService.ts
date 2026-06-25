@@ -11,6 +11,17 @@ export interface ActivityLog {
 }
 
 const ACTION_ICON: Record<string, string> = {
+  "Tambah Buku": " ",
+  "Edit Buku": " ",
+  "Hapus Buku": " ",
+  "Tambah Anggota": " ",
+  "Edit Anggota": " ",
+  "Hapus Anggota": " ",
+  "Pinjam Buku": " ",
+  "Kembalikan Buku": " ",
+  "Tambah Rak": " ",
+  "Edit Rak": " ",
+  "Hapus Rak": " ",
   "Tambah Buku": "📗",
   "Edit Buku": "✏️",
   "Hapus Buku": "🗑️",

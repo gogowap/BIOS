@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - Perpustakaan</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/nav/nav.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+    <nav id="mainNav"></nav>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <div class="page-title">Selamat Datang, <span>Admin</span></div>
+                <div id="tanggalHari" class="date-subtitle"></div>
+            </div>
+        </div>
+
+        <div class="notif-wrap" id="notifWrap"></div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Buku</div>
+                <div class="stat-value" id="statBooks">—</div>
+                <div class="stat-sub">judul terdaftar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Anggota Aktif</div>
+                <div class="stat-value" id="statMembers">—</div>
+                <div class="stat-sub">terdaftar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Sedang Dipinjam</div>
+                <div class="stat-value" id="statLoans">—</div>
+                <div class="stat-sub">buku aktif</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Denda</div>
+                <div class="stat-value" id="statFine" style="font-size:1.2rem">—</div>
+                <div class="stat-sub">terkumpul</div>
+            </div>
+        </div>
+
+        <div class="section-label">Peminjaman Terbaru</div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Buku</th>
+                        <th>Anggota</th>
+                        <th>Jatuh Tempo</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="dashLoans">
+                    <tr>
+                        <td colspan="4" class="empty-state">Memuat data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="/nav/nav.js"></script>
+    <script src="dashboard.js"></script>
+    <script>
+        renderNav('dashboard');
+    </script>
+</body>
+
+</html>
