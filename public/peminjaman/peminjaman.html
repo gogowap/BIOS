@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peminjaman - Perpustakaan</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/nav/nav.css">
+</head>
+
+<body>
+
+    <nav id="mainNav"></nav>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">Data <span>Peminjaman</span></div>
+            <button class="btn btn-primary" onclick="openLoanModal()">+ Pinjam Buku</button>
+        </div>
+
+        <div class="toolbar">
+            <select id="filterStatus" onchange="handleFilterLoans()">
+                <option value="">Semua Status</option>
+                <option value="borrowed">Dipinjam</option>
+                <option value="overdue">Terlambat</option>
+                <option value="returned">Dikembalikan</option>
+            </select>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Buku</th>
+                        <th>Anggota</th>
+                        <th>Tgl Pinjam</th>
+                        <th>Jatuh Tempo</th>
+                        <th>Status</th>
+                        <th>Denda</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="loansTable">
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <div class="icon">🔄</div>Memuat...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="modalLoan">
+        <div class="modal">
+            <div class="modal-title">Pinjam Buku</div>
+            <div class="form-group">
+                <label>Pilih Buku</label>
+                <select id="loanBook">
+                    <option value="">-- Pilih Buku --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Pilih Anggota</label>
+                <select id="loanMember">
+                    <option value="">-- Pilih Anggota --</option>
+                </select>
+            </div>
+            <div style="font-size: .79rem; color: var(--text-muted); margin-top: 4px">
+                ⏱ Durasi: <strong>7 hari</strong> &nbsp;|&nbsp; 💸 Denda: <strong>Rp 1.000/hari</strong>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeLoanModal()">Batal</button>
+                <button class="btn btn-primary" onclick="submitLoanForm()">Pinjam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalReturn">
+        <div class="modal">
+            <div class="modal-title">Konfirmasi Pengembalian</div>
+            <input type="hidden" id="returnLoanId">
+            <div id="returnPreview" class="fine-preview"></div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeReturnModal()">Batal</button>
+                <button class="btn btn-primary" onclick="confirmReturnForm()">✓ Konfirmasi</button>
+            </div>
+        </div>
+    </div>
+    <script src="/nav/nav.js"></script>
+    <script src="peminjaman.js"></script>
+    <script>
+        renderNav('peminjaman');
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - Perpustakaan Digital</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/nav/nav.css">
+</head>
+
+<body>
+
+    <nav id="mainNav"></nav>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <div class="page-title">Halo, <span id="userNameField">—</span>!</div>
+                <div style="color:var(--text-muted); font-size:.83rem; margin-top:4px">Selamat datang di perpustakaan
+                    digital</div>
+            </div>
+        </div>
+
+        <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr)">
+            <div class="stat-card">
+                <div class="stat-label">Total Buku</div>
+                <div class="stat-value" id="statTotalBooks">—</div>
+                <div class="stat-sub">tersedia di perpustakaan</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Rak</div>
+                <div class="stat-value" id="statTotalRak">—</div>
+                <div class="stat-sub">kategori lokasi buku</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Buku Tersedia</div>
+                <div class="stat-value" id="statAvailableBooks">—</div>
+                <div class="stat-sub">stok > 0</div>
+            </div>
+        </div>
+
+        <div class="section-label">Buku Terbaru</div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Judul</th>
+                        <th>Pengarang</th>
+                        <th>Rak</th>
+                        <th>Stok</th>
+                    </tr>
+                </thead>
+                <tbody id="recentBooksTableBody">
+                    <tr>
+                        <td colspan="4" class="empty-state">Memuat data buku...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="/nav/nav.js"></script>
+    <script src="beranda_pengguna.js"></script>
+    <script>
+        renderNav('beranda_pengguna');
+    </script>
+</body>
+
+</html>

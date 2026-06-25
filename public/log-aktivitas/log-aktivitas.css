@@ -1,0 +1,54 @@
+.action-badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: .71rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.act-TAMBAH_BUKU, .act-TAMBAH_ANGGOTA {
+    background: rgba(90, 158, 111, .15);
+    color: #7dcb96;
+}
+
+.act-EDIT_BUKU, .act-EDIT_ANGGOTA {
+    background: rgba(74, 142, 201, .15);
+    color: #74b3e8;
+}
+
+.act-HAPUS_BUKU, .act-HAPUS_ANGGOTA {
+    background: rgba(224, 90, 74, .15);
+    color: #e87c6e;
+}
+
+.act-PINJAM_BUKU {
+    background: rgba(201, 168, 76, .15);
+    color: var(--gold);
+}
+
+.act-KEMBALI_BUKU {
+    background: rgba(150, 120, 200, .15);
+    color: #c9a8f0;
+}
+
+.time-ago {
+    font-size: .75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.filter-sel {
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: .84rem;
+    outline: none;
+}
+
+.filter-sel option {
+    background: var(--surface2);
+}

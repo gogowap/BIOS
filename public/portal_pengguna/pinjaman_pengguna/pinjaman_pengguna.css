@@ -1,0 +1,15 @@
+.info-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-size: .85rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.info-box strong { color: var(--text); }
+.text-danger { color: var(--red); }
+.text-muted { color: var(--text-muted); }
