@@ -9,7 +9,7 @@ export const MemberController = {
     try { const members = await MemberService.getAllMembers(); res.json({ success: true, data: members }); }
     catch (err) { next(err); }
   },
-  async getById(req: Request, res: Response, next: NextFunction) {
+  async getById(req: Request, res: Response , next: NextFunction) {
     try { const member = await MemberService.getMemberById(Number(req.params.id)); res.json({ success: true, data: member }); }
     catch (err) { next(err); }
   },

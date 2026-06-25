@@ -1,3 +1,9 @@
+//sistem keamanan API menggunakan middleware authentication.  
+//Fungsi utamanya adalah:
+
+//mengecek token login,
+//memvalidasi user,
+//dan membatasi akses endpoint API.
 import { Request, Response, NextFunction } from "express";
 import pool from "../config/database";
 import { RowDataPacket } from "mysql2";
