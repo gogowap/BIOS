@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku - Perpustakaan</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/nav/nav.css">
+</head>
+
+<body>
+
+    <nav id="mainNav"></nav>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">Koleksi <span>Buku</span></div>
+            <div id="adminActions"></div>
+        </div>
+
+        <div class="toolbar">
+            <input type="text" id="searchBook" placeholder="Cari judul, pengarang..." oninput="handleFilterBooks()">
+            <select id="filterRak" onchange="handleFilterBooks()">
+                <option value="">Semua Rak</option>
+            </select>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Judul</th>
+                        <th>Pengarang</th>
+                        <th>Kode Buku</th>
+                        <th>Rak</th>
+                        <th>Stok</th>
+                        <th id="aksiHead"></th>
+                    </tr>
+                </thead>
+                <tbody id="booksTable">
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div class="icon">📖</div>Memuat...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="bookModal">
+        <div class="modal">
+            <div class="modal-title" id="modalTitle">Tambah Buku</div>
+            <input type="hidden" id="editBookId">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Judul</label>
+                    <input id="formTitle" placeholder="Judul buku">
+                </div>
+                <div class="form-group">
+                    <label>Pengarang</label>
+                    <input id="formAuthor" placeholder="Nama pengarang">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Kode Buku</label>
+                    <input id="formIsbn" placeholder="Contoh: BK-001">
+                </div>
+                <div class="form-group">
+                    <label>Stok</label>
+                    <input id="formStock" type="number" min="0" value="0">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Rak</label>
+                    <select id="formRak">
+                        <option value="">-- Pilih Rak --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tahun Terbit</label>
+                    <input id="formYear" type="number" placeholder="2024">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Deskripsi</label>
+                <textarea id="formDesc" placeholder="Deskripsi singkat..."></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeBookModal()">Batal</button>
+                <button class="btn btn-primary" onclick="submitBookForm()">Simpan</button>
+            </div>
+        </div>
+    </div>
+    <script src="/nav/nav.js"></script>
+    <script src="kelola_buku.js"></script>
+    <script>
+        renderNav('buku');
+    </script>
+</body>
+
+</html>
