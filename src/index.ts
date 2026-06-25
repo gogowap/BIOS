@@ -40,6 +40,8 @@ const startServer = async () => {
   app.listen(appConfig.port, () => {
     console.log(` Server: http://localhost:${appConfig.port}`);
     console.log(` Admin: admin / admin123`);
+    console.log(`🚀 Server: http://localhost:${appConfig.port}`);
+    console.log(`🔑 Admin: admin / admin123`);
   });
 };
 
