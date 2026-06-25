@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Anggota - Perpustakaan</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/nav/nav.css">
+    <link rel="stylesheet" href="manajemen_anggota.css">
+</head>
+
+<body>
+
+    <nav id="mainNav"></nav>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">Manajemen <span>Anggota</span></div>
+            <button class="btn btn-primary" onclick="openMemberModal(null)">+ Tambah Anggota</button>
+        </div>
+
+        <div id="warningBanner" style="display: none"></div>
+
+        <div class="toolbar">
+            <input type="text" id="searchMember" placeholder="Cari nama atau email..." oninput="handleFilterMembers()">
+            <select id="filterStatus" onchange="handleFilterMembers()">
+                <option value="">Semua Status</option>
+                <option value="active">Aktif</option>
+                <option value="suspended">Nonaktif</option>
+            </select>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>Telepon</th>
+                        <th>Pinjaman Aktif</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="membersTable">
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div class="icon">👥</div>Memuat data anggota...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="memberModal">
+        <div class="modal">
+            <div class="modal-title" id="modalTitle">Tambah Anggota</div>
+            <input type="hidden" id="editMemberId">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input id="formName" placeholder="Nama lengkap">
+                </div>
+                <div class="form-group">
+                    <label>No. Telepon</label>
+                    <input id="formPhone" placeholder="08123456789">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input id="formEmail" type="email" placeholder="email@contoh.com">
+            </div>
+
+            <div class="form-group" id="statusField" style="display: none">
+                <label>Status</label>
+                <select id="formStatus">
+                    <option value="active">Aktif</option>
+                    <option value="suspended">Nonaktif / Suspended</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeMemberModal()">Batal</button>
+                <button class="btn btn-primary" onclick="submitMemberForm()">Simpan</button>
+            </div>
+        </div>
+    </div>
+    <script src="/nav/nav.js"></script>
+    <script src="manajemen_anggota.js"></script>
+    <script>
+        renderNav('anggota');
+    </script>
+</body>
+
+</html>

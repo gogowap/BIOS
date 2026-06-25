@@ -1,0 +1,22 @@
+.alert-banner {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: .83rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.alert-warning {
+    background: rgba(224, 90, 74, .08);
+    border: 1px solid rgba(224, 90, 74, .2);
+    color: #e87c6e;
+}
+
+.alert-info {
+    background: rgba(201, 168, 76, .08);
+    border: 1px solid rgba(201, 168, 76, .2);
+    color: var(--gold);
+}

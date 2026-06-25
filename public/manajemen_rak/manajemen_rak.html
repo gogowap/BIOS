@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Rak - Perpustakaan</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/nav/nav.css">
+    <link rel="stylesheet" href="manajemen_rak.css">
+</head>
+<body>
+
+<nav id="mainNav"></nav>
+
+<main>
+    <div class="page-header">
+        <div class="page-title">Rak <span>Buku</span></div>
+        <div id="adminActionsContainer"></div>
+    </div>
+
+    <div class="rak-grid" id="rakGridContainer">
+        <div style="color:var(--text-muted)">Memuat daftar rak...</div>
+    </div>
+
+    <div id="rakBooksDetailSection" style="display:none">
+        <div class="divider"></div>
+        <div class="section-label">Buku di rak: <span id="activeRakLabel" style="color:var(--gold)"></span></div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Judul</th>
+                        <th>Pengarang</th>
+                        <th>ISBN</th>
+                        <th>Stok</th>
+                    </tr>
+                </thead>
+                <tbody id="rakBooksTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div class="modal-overlay" id="rakModal">
+    <div class="modal">
+        <div class="modal-title" id="rakModalTitle">Tambah Rak</div>
+        <input type="hidden" id="editRakId">
+        
+        <div class="form-group">
+            <label>Nama Rak</label>
+            <input id="formRakName" placeholder="Contoh: Rak Fiksi, Rak Sains">
+        </div>
+        
+        <div class="form-group">
+            <label>Deskripsi</label>
+            <textarea id="formRakDesc" placeholder="Deskripsi singkat rak..."></textarea>
+        </div>
+        
+        <div class="modal-actions">
+            <button class="btn btn-ghost" onclick="closeRakModal()">Batal</button>
+            <button class="btn btn-primary" onclick="submitRakForm()">Simpan</button>
+        </div>
+    </div>
+</div>
+<script src="/nav/nav.js"></script>
+<script src="manajemen_rak.js"></script>
+<script>
+    renderNav('rak');
+</script>
+</body>
+</html>
